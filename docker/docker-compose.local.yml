@@ -1,0 +1,145 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: uce_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: uce
+      POSTGRES_PASSWORD: uce123
+      POSTGRES_DB: uce_tramites
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    container_name: uce_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: uce_rabbit
+    restart: unless-stopped
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: uce_zookeeper
+    restart: unless-stopped
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: uce_kafka
+    restart: unless-stopped
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+
+      # IMPORTANTE: dentro de docker, kafka se ve como "kafka:9092"
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  auth-service:
+    build:
+      context: ../apps/auth-service
+    container_name: auth_service
+    restart: unless-stopped
+    ports:
+      - "8001:8000"
+    environment:
+      APP_ENV: local
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: uce_tramites
+      DB_USER: uce
+      DB_PASS: uce123
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      KAFKA_BOOTSTRAP: kafka:9092
+      RABBITMQ_HOST: rabbitmq
+    depends_on:
+      - postgres
+      - redis
+      - kafka
+      - rabbitmq
+
+  tramites-service:
+    build:
+      context: ../apps/tramites-service
+    container_name: tramites_service
+    restart: unless-stopped
+    ports:
+      - "8002:8000"
+    environment:
+      APP_ENV: local
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: uce_tramites
+      DB_USER: uce
+      DB_PASS: uce123
+      KAFKA_BOOTSTRAP: kafka:9092
+      KAFKA_TOPIC: tramite.creado
+    depends_on:
+      - postgres
+      - kafka
+
+  workflow-service:
+    build:
+      context: ../apps/workflow-service
+    container_name: workflow_service
+    restart: unless-stopped
+    environment:
+      APP_ENV: local
+      KAFKA_BOOTSTRAP: kafka:9092
+      KAFKA_TOPIC: tramite.creado
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: uce_tramites
+      DB_USER: uce
+      DB_PASS: uce123
+    depends_on:
+      - kafka
+      - postgres
+
+  # ✅ PUNTO 6: documents-service (microservicio 4)
+  documents-service:
+    build:
+      context: ../apps/documents-service
+    container_name: documents_service
+    restart: unless-stopped
+    ports:
+      - "8003:8000"
+    environment:
+      APP_ENV: local
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: uce_tramites
+      DB_USER: uce
+      DB_PASS: uce123
+      KAFKA_BOOTSTRAP: kafka:9092
+      # Si luego haces consumo de eventos, define el topic que corresponda:
+      # KAFKA_TOPIC: tramite.creado
+    depends_on:
+      - postgres
+      - kafka
+
+volumes:
+  postgres_data:
+
