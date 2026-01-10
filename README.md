@@ -20,8 +20,8 @@ docker compose -f docker/docker-compose.local.yml down
 
 
 
-\## Servicios y puertos (QA)
-
+## Servicios y puertos (QA)
+ 
 -auth-service: http://localhost:8001
 
 -tramites-service: http://localhost:8002
@@ -42,7 +42,11 @@ docker compose -f docker/docker-compose.local.yml down
 
 -auth-service: http://localhost:8001/docs
 
+ feature/readme-qa
+\- prueba: localhost:6379
+
 -tramites-service: http://localhost:8002/docs
+-qa
 
 -documents-service: http://localhost:8003/docs
 
