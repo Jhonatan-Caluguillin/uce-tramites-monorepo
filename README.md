@@ -42,6 +42,7 @@ docker ps
 
 \- redis: localhost:6379
 
+\- prueba: localhost:6379
 
 
 \## Swagger / Docs
