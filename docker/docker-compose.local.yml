@@ -118,7 +118,6 @@ services:
       - kafka
       - postgres
 
-  # ✅ PUNTO 6: documents-service (microservicio 4)
   documents-service:
     build:
       context: ../apps/documents-service
@@ -134,12 +133,27 @@ services:
       DB_USER: uce
       DB_PASS: uce123
       KAFKA_BOOTSTRAP: kafka:9092
-      # Si luego haces consumo de eventos, define el topic que corresponda:
-      # KAFKA_TOPIC: tramite.creado
+      KAFKA_TOPIC: documento.subido
     depends_on:
       - postgres
       - kafka
 
+  # ✅ 5to microservicio: notifications-service
+  notifications-service:
+    build:
+      context: ../apps/notifications-service
+    container_name: notifications_service
+    restart: unless-stopped
+    ports:
+      - "8004:8000"
+    environment:
+      APP_ENV: local
+      PYTHONUNBUFFERED: "1"
+      KAFKA_BOOTSTRAP: kafka:9092
+      KAFKA_TOPICS: "tramite.creado,documento.subido"
+    depends_on:
+      - kafka
+
+
 volumes:
   postgres_data:
-
