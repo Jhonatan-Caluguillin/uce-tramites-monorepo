@@ -165,6 +165,8 @@ services:
     depends_on:
       - kafka
 
+ # ✅ 6to microservicio audit-service 
+
   audit-service:
     build:
       context: ../apps/audit-service
@@ -182,6 +184,30 @@ services:
     depends_on:
       - kafka
       - mongo
+
+# ✅ 7mo microservicio payments-service
+
+  payments-service:
+    build:
+      context: ../apps/payments-service
+    container_name: payments_service
+    restart: unless-stopped
+    ports:
+      - "8006:8000"
+    environment:
+      APP_ENV: local
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: uce_tramites
+      DB_USER: uce
+      DB_PASS: uce123
+      KAFKA_BOOTSTRAP: kafka:9092
+      KAFKA_TOPIC: pago.realizado
+    depends_on:
+      - postgres
+      - kafka
+
+
 
 
 volumes:
