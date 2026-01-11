@@ -52,6 +52,12 @@ docker compose -f docker/docker-compose.local.yml down
 
 -notifications-service: http://localhost:8004/docs
 
+-audit-service http://localhost:8005/docs
+ 
+-payments-service: http://localhost:8006/docs
+
+payments-service docs: http://localhost:8006/docs
+
 
 **Pruebas rápidas (end-to-end)*
  
