@@ -48,11 +48,14 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+
+      # IMPORTANTE: dentro de docker, kafka se ve como "kafka:9092"
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
 
   mongo:
     image: mongo:7
@@ -62,6 +65,7 @@ services:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
+
 
   auth-service:
     build:
@@ -157,11 +161,12 @@ services:
       APP_ENV: local
       PYTHONUNBUFFERED: "1"
       KAFKA_BOOTSTRAP: kafka:9092
-      KAFKA_TOPICS: "tramite.creado,documento.subido,payments.events"
+      KAFKA_TOPICS: "tramite.creado,documento.subido,payments.events
     depends_on:
       - kafka
 
-  # 6to microservicio: audit-service
+ # âœ… 6to microservicio audit-service
+
   audit-service:
     build:
       context: ../apps/audit-service
@@ -180,7 +185,8 @@ services:
       - kafka
       - mongo
 
-  # 7mo microservicio: payments-service
+# âœ… 7mo microservicio payments-service
+
   payments-service:
     build:
       context: ../apps/payments-service
@@ -196,10 +202,13 @@ services:
       DB_USER: uce
       DB_PASS: uce123
       KAFKA_BOOTSTRAP: kafka:9092
-      KAFKA_TOPIC: payments.events
+      KAFKA_TOPIC=payments.events
     depends_on:
       - postgres
       - kafka
+
+
+
 
 volumes:
   postgres_data:
