@@ -201,8 +201,7 @@ services:
       - postgres
       - kafka
 
-  # 8vo microservicio: users-service
-  users-service:
+ users-service:
     build:
       context: ../apps/users-service
     container_name: users_service
@@ -221,6 +220,30 @@ services:
     depends_on:
       - postgres
       - kafka
+
+
+
+  students-service:
+    build:
+      context: ../apps/students-service
+    container_name: students_service
+    restart: unless-stopped
+    ports:
+      - "8008:8000"
+    environment:
+      APP_ENV: local
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: uce_tramites
+      DB_USER: uce
+      DB_PASS: uce123
+      KAFKA_BOOTSTRAP: kafka:9092
+      KAFKA_TOPIC: students.events
+    depends_on:
+      - postgres
+      - kafka
+
+
 
 
 volumes:
