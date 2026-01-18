@@ -1,0 +1,6 @@
+fastapi==0.115.6
+uvicorn[standard]==0.32.1
+psycopg2-binary==2.9.9
+kafka-python==2.0.2
+pydantic==2.10.3
+python-dotenv==1.0.1
