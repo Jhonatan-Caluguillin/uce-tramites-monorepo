@@ -1,0 +1,15 @@
+{
+  "name": "reporting-service",
+  "sourceRoot": "apps/reporting-service/src",
+  "targets": {
+    "docker-build": {
+      "command": "docker build -t docker-reporting-service apps/reporting-service"
+    },
+    "docker-up": {
+      "command": "docker compose -f docker/docker-compose.local.yml up -d reporting-service"
+    },
+    "test": {
+      "command": "echo \"no tests yet\""
+    }
+  }
+}

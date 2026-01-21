@@ -196,12 +196,12 @@ services:
       DB_USER: uce
       DB_PASS: uce123
       KAFKA_BOOTSTRAP: kafka:9092
-      KAFKA_TOPIC: payments.events
+      KAFKA_TOPIC: "payments.events"
     depends_on:
       - postgres
       - kafka
 
- users-service:
+  users-service:
     build:
       context: ../apps/users-service
     container_name: users_service
@@ -216,10 +216,11 @@ services:
       DB_USER: uce
       DB_PASS: uce123
       KAFKA_BOOTSTRAP: kafka:9092
-      KAFKA_TOPIC: users.events
+      KAFKA_TOPIC: "users.events"
     depends_on:
       - postgres
       - kafka
+
 
 
 
@@ -238,11 +239,29 @@ services:
       DB_USER: uce
       DB_PASS: uce123
       KAFKA_BOOTSTRAP: kafka:9092
-      KAFKA_TOPIC: students.events
+      KAFKA_TOPIC: "students.events"
     depends_on:
       - postgres
       - kafka
 
+  reporting-service:
+    build:
+      context: ../apps/reporting-service
+    container_name: reporting_service
+    restart: unless-stopped
+    ports:
+      - "8010:8000"
+    environment:
+      APP_ENV: local
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: uce_tramites
+      DB_USER: uce
+      DB_PASS: uce123
+      KAFKA_BOOTSTRAP: kafka:9092
+    depends_on:
+      - postgres
+      - kafka
 
 
 
