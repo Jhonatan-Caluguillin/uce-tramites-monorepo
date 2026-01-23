@@ -1,0 +1,19 @@
+{
+  "name": "workflow-service",
+  "projectType": "application",
+  "sourceRoot": "apps/workflow-service/src",
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker build -t workflow-service ."
+      }
+    },
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "python src/main.py"
+      }
+    }
+  }
+}

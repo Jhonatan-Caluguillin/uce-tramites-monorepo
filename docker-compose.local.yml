@@ -65,7 +65,7 @@ services:
 
   auth-service:
     build:
-      context: ../apps/auth-service
+      context: apps/auth-service
     container_name: auth_service
     restart: unless-stopped
     ports:
@@ -89,7 +89,7 @@ services:
 
   tramites-service:
     build:
-      context: ../apps/tramites-service
+      context: apps/tramites-service
     container_name: tramites_service
     restart: unless-stopped
     ports:
@@ -109,7 +109,7 @@ services:
 
   workflow-service:
     build:
-      context: ../apps/workflow-service
+      context: apps/workflow-service
     container_name: workflow_service
     restart: unless-stopped
     environment:
@@ -127,7 +127,7 @@ services:
 
   documents-service:
     build:
-      context: ../apps/documents-service
+      context: apps/documents-service
     container_name: documents_service
     restart: unless-stopped
     ports:
@@ -145,10 +145,9 @@ services:
       - postgres
       - kafka
 
-  # 5to microservicio: notifications-service
   notifications-service:
     build:
-      context: ../apps/notifications-service
+      context: apps/notifications-service
     container_name: notifications_service
     restart: unless-stopped
     ports:
@@ -161,10 +160,9 @@ services:
     depends_on:
       - kafka
 
-  # 6to microservicio: audit-service
   audit-service:
     build:
-      context: ../apps/audit-service
+      context: apps/audit-service
     container_name: audit_service
     restart: unless-stopped
     ports:
@@ -180,10 +178,9 @@ services:
       - kafka
       - mongo
 
-  # 7mo microservicio: payments-service
   payments-service:
     build:
-      context: ../apps/payments-service
+      context: apps/payments-service
     container_name: payments_service
     restart: unless-stopped
     ports:
@@ -196,74 +193,10 @@ services:
       DB_USER: uce
       DB_PASS: uce123
       KAFKA_BOOTSTRAP: kafka:9092
-      KAFKA_TOPIC: "payments.events"
+      KAFKA_TOPIC: payments.events
     depends_on:
       - postgres
       - kafka
-
-  users-service:
-    build:
-      context: ../apps/users-service
-    container_name: users_service
-    restart: unless-stopped
-    ports:
-      - "8007:8000"
-    environment:
-      APP_ENV: local
-      DB_HOST: postgres
-      DB_PORT: 5432
-      DB_NAME: uce_tramites
-      DB_USER: uce
-      DB_PASS: uce123
-      KAFKA_BOOTSTRAP: kafka:9092
-      KAFKA_TOPIC: "users.events"
-    depends_on:
-      - postgres
-      - kafka
-
-
-
-
-  students-service:
-    build:
-      context: ../apps/students-service
-    container_name: students_service
-    restart: unless-stopped
-    ports:
-      - "8008:8000"
-    environment:
-      APP_ENV: local
-      DB_HOST: postgres
-      DB_PORT: 5432
-      DB_NAME: uce_tramites
-      DB_USER: uce
-      DB_PASS: uce123
-      KAFKA_BOOTSTRAP: kafka:9092
-      KAFKA_TOPIC: "students.events"
-    depends_on:
-      - postgres
-      - kafka
-
-  reporting-service:
-    build:
-      context: ../apps/reporting-service
-    container_name: reporting_service
-    restart: unless-stopped
-    ports:
-      - "8010:8000"
-    environment:
-      APP_ENV: local
-      DB_HOST: postgres
-      DB_PORT: 5432
-      DB_NAME: uce_tramites
-      DB_USER: uce
-      DB_PASS: uce123
-      KAFKA_BOOTSTRAP: kafka:9092
-    depends_on:
-      - postgres
-      - kafka
-
-
 
 volumes:
   postgres_data:

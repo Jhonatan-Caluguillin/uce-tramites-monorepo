@@ -1,0 +1,177 @@
+services:
+  auth-service:
+    build:
+      context: ../apps/auth-service
+    container_name: auth_service
+    restart: unless-stopped
+    environment:
+      APP_ENV: qa
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+      KAFKA_BOOTSTRAP: ${KAFKA_BOOTSTRAP}
+      RABBITMQ_HOST: ${RABBITMQ_HOST}
+    expose: ["8000"]
+
+  tramites-service:
+    build:
+      context: ../apps/tramites-service
+    container_name: tramites_service
+    restart: unless-stopped
+    environment:
+      APP_ENV: qa
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      KAFKA_BOOTSTRAP: ${KAFKA_BOOTSTRAP}
+      KAFKA_TOPIC: "tramite.creado"
+    expose: ["8000"]
+
+  workflow-service:
+    build:
+      context: ../apps/workflow-service
+    container_name: workflow_service
+    restart: unless-stopped
+    environment:
+      APP_ENV: qa
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      KAFKA_BOOTSTRAP: ${KAFKA_BOOTSTRAP}
+      KAFKA_TOPIC: "tramite.creado"
+    expose: ["8000"]
+
+  documents-service:
+    build:
+      context: ../apps/documents-service
+    container_name: documents_service
+    restart: unless-stopped
+    environment:
+      APP_ENV: qa
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      KAFKA_BOOTSTRAP: ${KAFKA_BOOTSTRAP}
+      KAFKA_TOPIC: "documento.subido"
+    expose: ["8000"]
+
+  notifications-service:
+    build:
+      context: ../apps/notifications-service
+    container_name: notifications_service
+    restart: unless-stopped
+    environment:
+      APP_ENV: qa
+      PYTHONUNBUFFERED: "1"
+      KAFKA_BOOTSTRAP: ${KAFKA_BOOTSTRAP}
+      KAFKA_TOPICS: "tramite.creado,documento.subido,payments.events,users.events,students.events"
+    expose: ["8000"]
+
+  audit-service:
+    build:
+      context: ../apps/audit-service
+    container_name: audit_service
+    restart: unless-stopped
+    environment:
+      APP_ENV: qa
+      KAFKA_BOOTSTRAP: ${KAFKA_BOOTSTRAP}
+      KAFKA_TOPICS: "tramite.creado,documento.subido,payments.events,users.events,students.events"
+      MONGO_URI: ${MONGO_URI}
+      MONGO_DB: uce_audit
+      MONGO_COLLECTION: events
+    expose: ["8000"]
+
+  payments-service:
+    build:
+      context: ../apps/payments-service
+    container_name: payments_service
+    restart: unless-stopped
+    environment:
+      APP_ENV: qa
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      KAFKA_BOOTSTRAP: ${KAFKA_BOOTSTRAP}
+      KAFKA_TOPIC: "payments.events"
+    expose: ["8000"]
+
+  users-service:
+    build:
+      context: ../apps/users-service
+    container_name: users_service
+    restart: unless-stopped
+    environment:
+      APP_ENV: qa
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      KAFKA_BOOTSTRAP: ${KAFKA_BOOTSTRAP}
+      KAFKA_TOPIC: "users.events"
+    expose: ["8000"]
+
+  students-service:
+    build:
+      context: ../apps/students-service
+    container_name: students_service
+    restart: unless-stopped
+    environment:
+      APP_ENV: qa
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      KAFKA_BOOTSTRAP: ${KAFKA_BOOTSTRAP}
+      KAFKA_TOPIC: "students.events"
+    expose: ["8000"]
+
+  reporting-service:
+    build:
+      context: ../apps/reporting-service
+    container_name: reporting_service
+    restart: unless-stopped
+    environment:
+      APP_ENV: qa
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      KAFKA_BOOTSTRAP: ${KAFKA_BOOTSTRAP}
+    expose: ["8000"]
+
+  nginx:
+    image: nginx:alpine
+    container_name: uce_gateway
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - auth-service
+      - tramites-service
+      - workflow-service
+      - documents-service
+      - notifications-service
+      - audit-service
+      - payments-service
+      - users-service
+      - students-service
+      - reporting-service
+
+

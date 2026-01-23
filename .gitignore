@@ -1,0 +1,20 @@
+# Nx
+.nx/
+node_modules/
+
+# Python
+__pycache__/
+*.pyc
+
+# Env
+.env
+
+# Ignorar binarios de Terraform
+.terraform/
+*.exe
+terraform-provider-*
+*.tfstate
+*.tfstate.backup
+
+# Ignorar llaves de seguridad (Por seguridad)
+*.pem

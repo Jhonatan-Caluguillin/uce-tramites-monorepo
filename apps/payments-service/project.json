@@ -1,0 +1,25 @@
+{
+  "name": "payments-service",
+  "sourceRoot": "apps/payments-service/src",
+  "projectType": "application",
+  "targets": {
+    "docker-build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker build -t payments-service apps/payments-service"
+      }
+    },
+    "docker-up": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker compose -f docker/docker-compose.local.yml up -d payments-service"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo \"tests pending\""
+      }
+    }
+  }
+}

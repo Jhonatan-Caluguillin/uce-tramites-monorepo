@@ -2,59 +2,75 @@
 
 
 
-\## 1) Setup (requisitos)
-
-\- Windows + PowerShell
-
-\- Docker Desktop (WSL2 recomendado)
-
-\- Git (opcional, para clonar)
+## 1) Requisitos
+- Windows + PowerShell
+- Docker Desktop (WSL2 recomendado)
+- Git
 
 
 
-\## 2) Run QA (levantar todo con Docker Compose)
-
-Desde la raíz del repo:
-
-
-
-```powershell
-
-docker compose -f docker\\docker-compose.local.yml up -d --build
-
+## 2) Levantar entorno QA (Docker Compose)
+```bash
+docker compose -f docker/docker-compose.local.yml up -d --build
 docker ps
 
 
-
-\## Servicios y puertos (QA)
-
-\- auth-service: http://localhost:8001
-
-\- tramites-service: http://localhost:8002
-
-\- documents-service: http://localhost:8003
-
-\- rabbitmq management: http://localhost:15672
-
-\- kafka: localhost:9092
-
-\- postgres: localhost:5432
-
-\- redis: localhost:6379
+Para detener:
+docker compose -f docker/docker-compose.local.yml down
 
 
 
-\## Swagger / Docs
+## Servicios y puertos (QA)
+ 
+-auth-service: http://localhost:8001
 
-\- auth-service: http://localhost:8001/docs
+-tramites-service: http://localhost:8002
 
-\- tramites-service: http://localhost:8002/docs
+-documents-service: http://localhost:8003
 
-\- documents-service: http://localhost:8003/docs
+-notifications-service: http://localhost:8004
+
+-rabbitmq management: http://localhost:15672
+
+-kafka: localhost:9092
+
+-postgres: localhost:5432
+
+-redis: localhost:6379
+
+***Swagger / Docs: ****
+
+-auth-service: http://localhost:8001/docs
+
+ feature/readme-qa
+\- prueba: localhost:6379
+
+-tramites-service: http://localhost:8002/docs
+-qa
+
+-documents-service: http://localhost:8003/docs
+
+-notifications-service: http://localhost:8004/docs
+
+-audit-service http://localhost:8005/docs
+ 
+-payments-service: http://localhost:8006/docs
+
+payments-service docs: http://localhost:8006/docs
 
 
+**Pruebas rápidas (end-to-end)*
+ 
+-Crear tramites
+Invoke-RestMethod -Method Post -Uri "http://localhost:8003/documents" -ContentType "application/json" -Body '{"tramite_id":1,"nombre":"certificado.pdf","url":"https://example.com/certificado.pdf"}'
 
-> Entorno QA local levantado con Docker Compose (`docker/docker-compose.local.yml`).
+-Subir documentos 
+
+Invoke-RestMethod -Method Post -Uri "http://localhost:8002/tramites" -ContentType "application/json" -Body '{"estudiante_id":"1720000000","tipo":"certificado_matricula"}'
+
+
+* ver logs *
+docker logs -f notifications_service
 
 
 
