@@ -48,14 +48,11 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-
-      # IMPORTANTE: dentro de docker, kafka se ve como "kafka:9092"
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-
 
   mongo:
     image: mongo:7
@@ -66,10 +63,9 @@ services:
     volumes:
       - mongo_data:/data/db
 
-
   auth-service:
     build:
-      context: ../apps/auth-service
+      context: apps/auth-service
     container_name: auth_service
     restart: unless-stopped
     ports:
@@ -93,7 +89,7 @@ services:
 
   tramites-service:
     build:
-      context: ../apps/tramites-service
+      context: apps/tramites-service
     container_name: tramites_service
     restart: unless-stopped
     ports:
@@ -113,7 +109,7 @@ services:
 
   workflow-service:
     build:
-      context: ../apps/workflow-service
+      context: apps/workflow-service
     container_name: workflow_service
     restart: unless-stopped
     environment:
@@ -131,7 +127,7 @@ services:
 
   documents-service:
     build:
-      context: ../apps/documents-service
+      context: apps/documents-service
     container_name: documents_service
     restart: unless-stopped
     ports:
@@ -149,10 +145,9 @@ services:
       - postgres
       - kafka
 
-  # 5to microservicio: notifications-service
   notifications-service:
     build:
-      context: ../apps/notifications-service
+      context: apps/notifications-service
     container_name: notifications_service
     restart: unless-stopped
     ports:
@@ -161,15 +156,13 @@ services:
       APP_ENV: local
       PYTHONUNBUFFERED: "1"
       KAFKA_BOOTSTRAP: kafka:9092
-      KAFKA_TOPICS: "tramite.creado,documento.subido,payments.events
+      KAFKA_TOPICS: "tramite.creado,documento.subido,payments.events"
     depends_on:
       - kafka
 
- # âœ… 6to microservicio audit-service
-
   audit-service:
     build:
-      context: ../apps/audit-service
+      context: apps/audit-service
     container_name: audit_service
     restart: unless-stopped
     ports:
@@ -185,11 +178,9 @@ services:
       - kafka
       - mongo
 
-# âœ… 7mo microservicio payments-service
-
   payments-service:
     build:
-      context: ../apps/payments-service
+      context: apps/payments-service
     container_name: payments_service
     restart: unless-stopped
     ports:
@@ -202,13 +193,10 @@ services:
       DB_USER: uce
       DB_PASS: uce123
       KAFKA_BOOTSTRAP: kafka:9092
-      KAFKA_TOPIC=payments.events
+      KAFKA_TOPIC: payments.events
     depends_on:
       - postgres
       - kafka
-
-
-
 
 volumes:
   postgres_data:
