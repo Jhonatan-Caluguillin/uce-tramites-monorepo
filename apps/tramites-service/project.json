@@ -1,0 +1,19 @@
+{
+  "name": "tramites-service",
+  "projectType": "application",
+  "sourceRoot": "apps/tramites-service/src",
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker build -t tramites-service ."
+      }
+    },
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "python src/main.py"
+      }
+    }
+  }
+}
