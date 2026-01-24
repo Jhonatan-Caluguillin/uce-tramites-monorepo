@@ -2,7 +2,7 @@ name: CI/CD Docker Hub (QA)
 
 on:
   push:
-    branches: [ "qa", "main", "principal" ] # Se activa en cualquier rama importante
+    branches: [ "qa", "main", "principal" ]
 
 jobs:
   build:
@@ -14,19 +14,64 @@ jobs:
       - name: Login en Docker Hub
         uses: docker/login-action@v2
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }} # Usa tu usuario jacaluguillin
-          password: ${{ secrets.DOCKERHUB_TOKEN }} # Usa el token dckr_pat...
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Construir y Subir Auth Service
+      # 1 & 2: Los que ya funcionaban
+      - name: Build & Push Auth Service
         run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/auth-service:latest \
-            -f apps/auth-service/Dockerfile \
-            apps/auth-service
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/auth-service:latest -f apps/auth-service/Dockerfile apps/auth-service
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/auth-service:latest
 
-      - name: Construir y Subir Users Service
+      - name: Build & Push Users Service
         run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/users-service:latest \
-            -f apps/users-service/Dockerfile \
-            apps/users-service
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/users-service:latest -f apps/users-service/Dockerfile apps/users-service
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/users-service:latest
+
+      # 3: Tramites
+      - name: Build & Push Tramites Service
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/tramites-service:latest -f apps/tramites-service/Dockerfile apps/tramites-service
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/tramites-service:latest
+
+      # 4: Payments
+      - name: Build & Push Payments Service
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/payments-service:latest -f apps/payments-service/Dockerfile apps/payments-service
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/payments-service:latest
+
+      # 5: Notifications
+      - name: Build & Push Notifications Service
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/notifications-service:latest -f apps/notifications-service/Dockerfile apps/notifications-service
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/notifications-service:latest
+
+      # 6: Documents
+      - name: Build & Push Documents Service
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/documents-service:latest -f apps/documents-service/Dockerfile apps/documents-service
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/documents-service:latest
+
+      # 7: Audit
+      - name: Build & Push Audit Service
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/audit-service:latest -f apps/audit-service/Dockerfile apps/audit-service
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/audit-service:latest
+
+      # 8: Workflow
+      - name: Build & Push Workflow Service
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/workflow-service:latest -f apps/workflow-service/Dockerfile apps/workflow-service
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/workflow-service:latest
+
+      # 9: Reporting
+      - name: Build & Push Reporting Service
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/reporting-service:latest -f apps/reporting-service/Dockerfile apps/reporting-service
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/reporting-service:latest
+
+      # 10: Students
+      - name: Build & Push Students Service
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/students-service:latest -f apps/students-service/Dockerfile apps/students-service
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/students-service:latest
